@@ -1,0 +1,4 @@
+undetected_chromedriver
+google_play_scraper
+selenium
+apkutils
