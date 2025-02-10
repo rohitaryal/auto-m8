@@ -22,7 +22,7 @@ parser.add_argument('-d', '--dir', help='Focus on whole directory')
 parser.add_argument('-v', '--verbose', help='Print verbose detail', action='store_true')
 parser.add_argument('-o', '--output', help='Output path for result')
 parser.add_argument('-t', '--template', help='Template file to use')
-
+parser.add_argument('-c', '--credit', help='Username to use as credit')
 args = parser.parse_args()
 
 
@@ -57,23 +57,23 @@ class Utils:
     @staticmethod
     def log(*args):
         if DEBUG:
-            print("[+]", args)
+            print("[+]", "".join(args))
 
     @staticmethod
     def print(*args):
-        print(args)
+        print("".join(args))
 
     @staticmethod
     def error(*args):
-        print("[!]", args)
+        print("[!]", "".join(args))
 
     @staticmethod
     def info(*args):
-        print("[i]", args)
+        print("[i]", "".join(args))
 
     @staticmethod
     def prompt(message: str):
-        return input("[?] " + message)
+        return input("[?] " + message + ": ")
 
     @staticmethod
     def exec(code: str):
@@ -170,6 +170,7 @@ class APKHelper:
 
 ######################### WORKING BODY HERE ###########################
 
+username = args.credit or "None"
 output_path = args.output or "result.bb"
 template_path = args.template or "./templates/untested_app.bb"
 
@@ -217,9 +218,9 @@ if args.dir:
                 temp[key] = store_detail[val]
             store_detail = temp
 
-        store_detail["{FEATURES_HERE}"] = Utils.prompt("Features: "),
-        store_detail["{CREDITS_HERE}"] =  Utils.prompt("Credits: ") or "me"
-        store_detail["{NOTES_HERE}"] = Utils.prompt("Notes: ") or "none"
+        store_detail["{FEATURES_HERE}"] = Utils.prompt("Features"),
+        store_detail["{CREDITS_HERE}"] =  Utils.prompt("Credits") or "me"
+        store_detail["{NOTES_HERE}"] = Utils.prompt("Notes") or "none"
 
         bb_code = Utils.bb_format(bb_code, store_detail)
         Utils.appendfile(output_path, bb_code)
