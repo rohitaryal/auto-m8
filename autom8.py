@@ -26,7 +26,12 @@ args = parser.parse_args()
 
 
 #################### DEFAULTS #######################
+built_in_templates = {
+    "untested_app": "./templates/untested_app.bb",
+    "shared_mod": "./templates/shared_mod.bb",
+}
 
+default_username = "me"
 
 
 ########### APK Not Found Exception Class ##############
@@ -174,7 +179,7 @@ class APKHelper:
 
 username = args.credit or "None"
 output_path = args.output or "result.bb"
-template_path = args.template or "./templates/untested_app.bb"
+template_path = args.template or built_in_templates["untested_app"]
 
 pattern_target = {
     "{APP_ICON_HERE}": "icon",
@@ -220,9 +225,11 @@ if args.dir:
                 temp[key] = store_detail[val]
             store_detail = temp
 
-        store_detail["{FEATURES_HERE}"] = Utils.prompt("Features"),
-        store_detail["{CREDITS_HERE}"] =  Utils.prompt("Credits") or "me"
-        store_detail["{NOTES_HERE}"] = Utils.prompt("Notes") or "none"
+        store_detail["{FEATURES_HERE}"] = "\n".join(",".split(Utils.prompt("Features (Seperated by commas)")))
+        store_detail["{CREDITS_HERE}"] =  Utils.prompt("Credits") or default_username
+        store_detail["{NOTES_HERE}"] = Utils.prompt("Notes") or "No Notes"
+        store_detail["{DOWNLOAD_LINK1_HERE}"] = Utils.prompt("Download Link 1")
+        store_detail["{DOWNLOAD_LINK2_HERE}"] = Utils.prompt("Download Link 2")
 
         bb_code = Utils.bb_format(bb_code, store_detail)
         Utils.appendfile(output_path, bb_code)
