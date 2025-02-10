@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import argparse
 from apkutils import APK
@@ -27,6 +28,7 @@ parser.add_argument('-o', '--output', help='Output path for result')
 parser.add_argument('-t', '--template', help='Template file to use')
 parser.add_argument('-c', '--credit', help='Username to use as credit')
 parser.add_argument('-u', '--url', help="URL to open for uploading mod")
+parser.add_argument('-p', '--profile', help="Custom profile directory. Default: ./profile")
 args = parser.parse_args()
 
 
@@ -189,6 +191,7 @@ class APKHelper:
 
 ######################### WORKING BODY HERE ###########################
 
+profile_path = args.profile or "./profile"
 username = args.credit or default_username
 output_path = args.output or "result.bb"
 template_path = args.template or built_in_templates["untested_app"]["path"]
@@ -216,7 +219,7 @@ if not os.path.isfile(template_path):
 # --dir or -d is a must flag
 if not args.dir:
     parser.print_help()
-    os._exit(-1)
+    sys.exit(-1)
 
 
 # Check if --dir or -d value is a valid path
@@ -264,12 +267,13 @@ for apk in apk_list:
 
 
     options = uc.ChromeOptions()
-    options.add_argument(f"--user-data-dir=./profile")
+    options.add_argument(f"--user-data-dir={profile_path}")
     options.add_argument(f"--profile-directory=Default")
 
     driver = uc.Chrome(options=options, headless=False)
     wait = WebDriverWait(driver=driver, timeout=400, poll_frequency=1)
 
+    # Upload files
     for site in file_hosting:
         driver.get(site)
         form = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
@@ -311,7 +315,7 @@ for apk in apk_list:
     Utils.log("Clicking on btn1")
     btn1.click()
 
-    # Must wait here
+    # Must wait here because html is loaded just now
     time.sleep(1)
     btn2 = driver.find_element(By.CSS_SELECTOR, ".menuPrefix.label.label--orange")
     Utils.log("Clicking on btn2")
@@ -332,7 +336,7 @@ for apk in apk_list:
         Utils.log("Enabling BB mode")
         enable_bb_button.click()
 
-        # Must wait here
+        # Must wait here because bb translation to html takes time
         time.sleep(2)
 
 
@@ -340,10 +344,12 @@ for apk in apk_list:
     bb_body_field.clear()
 
     Utils.log("Sending BB content")
+    # Not using .send_keys() because '\n' in bb_code is literally taken as Enter command in form
+    # This caused the page to redirect, thus this is an easy solution
     driver.execute_script(f"arguments[0].value = `{bb_code}`", bb_body_field)
 
     submit_btn = driver.find_element(By.CSS_SELECTOR, "button.button--icon.button--icon--write.button--primary.rippleButton")
-    # submit_btn.click()
-
-    time.sleep(100)
+    submit_btn.click()
     driver.quit()
+
+    print(f"App is uploaded successfully: {apk}")
