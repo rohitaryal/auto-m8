@@ -273,9 +273,15 @@ for apk in apk_list:
     driver = uc.Chrome(options=options, headless=False)
     wait = WebDriverWait(driver=driver, timeout=400, poll_frequency=1)
 
+    
+
     # Upload files
     for site in file_hosting:
+        if store_detail["{DOWNLOAD_LINK1_HERE}"] != "" and store_detail["{DOWNLOAD_LINK2_HERE}"] != "":
+            continue
+
         driver.get(site)
+#        time.sleep(100)
         form = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
         form.send_keys(apk)
         if "modsfire" in site:
@@ -329,10 +335,10 @@ for apk in apk_list:
         Utils.log("BB Code is already active")
     except:
         enable_bb_button = driver.find_element(By.CSS_SELECTOR, "#xfBbCode-1")
-        
+
         Utils.log("Scrolling to BB Button")
         driver.execute_script("$('.button--icon--cancel')[0].scrollIntoView(true);")
-        
+
         Utils.log("Enabling BB mode")
         enable_bb_button.click()
 
@@ -350,6 +356,8 @@ for apk in apk_list:
 
     submit_btn = driver.find_element(By.CSS_SELECTOR, "button.button--icon.button--icon--write.button--primary.rippleButton")
     submit_btn.click()
+
+    time.sleep(5)
     driver.quit()
 
     print(f"App is uploaded successfully: {apk}")
