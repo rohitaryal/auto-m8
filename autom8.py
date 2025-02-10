@@ -8,7 +8,6 @@ DEBUG = True
 
 
 
-
 ############# Argument Parser Configuration ############
 parser = argparse.ArgumentParser(
     prog="autom8",
@@ -24,6 +23,9 @@ parser.add_argument('-o', '--output', help='Output path for result')
 parser.add_argument('-t', '--template', help='Template file to use')
 parser.add_argument('-c', '--credit', help='Username to use as credit')
 args = parser.parse_args()
+
+
+#################### DEFAULTS #######################
 
 
 
