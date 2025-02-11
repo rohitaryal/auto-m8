@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import random
 import argparse
 from apkutils import APK
 from google_play_scraper import app
@@ -248,7 +249,7 @@ for apk in apk_list:
     if store_detail is None:
         store_detail = {}
         for key, val in zip(pattern_target.keys(), pattern_target.values()):
-            store_detail[val] = Utils.prompt(key)
+            store_detail[key] = Utils.prompt(key)
     else:
         temp = {}
         for key, val in zip(pattern_target.keys(), pattern_target.values()):
@@ -259,7 +260,7 @@ for apk in apk_list:
             temp[key] = store_detail[val]
         store_detail = temp
 
-    store_detail["{FEATURES_HERE}"] = Utils.prompt("Mod features")
+    store_detail["{FEATURES_HERE}"] = Utils.prompt("Mod features") or random.choice(["VIP", "Pro Unlocked", "Premium Unlocked", "Premium Mod"])
     store_detail["{CREDITS_HERE}"] =  Utils.prompt("Credits") or default_username
     store_detail["{NOTES_HERE}"] = Utils.prompt("Notes") or "No Notes"
     store_detail["{DOWNLOAD_LINK1_HERE}"] = Utils.prompt("Download Link 1")
@@ -281,7 +282,7 @@ for apk in apk_list:
             continue
 
         driver.get(site)
-#        time.sleep(100)
+        #time.sleep(100)
         form = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
         form.send_keys(apk)
         if "modsfire" in site:
@@ -315,7 +316,7 @@ for apk in apk_list:
     title_box.clear()
 
     Utils.log("Sending keystrokes to title box")
-    title_box.send_keys(store_detail["{APP_NAME_HERE}"] + " v" + store_detail["{APP_VERSION_HERE}"] + " (MOD APK)")
+    title_box.send_keys(store_detail["{APP_NAME_HERE}"] + " v" + store_detail["{APP_VERSION_HERE}"] + " | " + store_detail['{FEATURES_HERE}'])
 
     btn1 = driver.find_element(By.CSS_SELECTOR, ".menuTrigger.menuTrigger--prefix")
     Utils.log("Clicking on btn1")
