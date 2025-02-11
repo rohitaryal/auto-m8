@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import time
 import random
@@ -358,7 +359,38 @@ for apk in apk_list:
     submit_btn = driver.find_element(By.CSS_SELECTOR, "button.button--icon.button--icon--write.button--primary.rippleButton")
     submit_btn.click()
 
-    time.sleep(5)
-    driver.quit()
+    Utils.log("Detecting timeout dialog")
+    time.sleep(4)
 
+    # Find if the timeout is there and sleep for that seconds
+    # Workaround for the timeout, but some high rank account 
+    # won't need it
+    try:
+        timeout_box = driver.find_element(By.CSS_SELECTOR, ".overlay")
+        # Extracted timeout from the timeout box
+        Utils.log("Timeout dialog detected")
+        timeout_text = re.search(r"\d+", timeout_box.text)
+
+        if timeout_text:
+            timeout_text = int(timeout_text.group(0))
+        else:
+            # Just wait for 30 seconds
+            timeout_text = 30
+
+        Utils.log("Clicking on overlay to close dialog")
+        overlay_cover = driver.find_element(By.CSS_SELECTOR, ".overlay-container.is-active")
+        overlay_cover.click()
+
+        Utils.info(f"Waiting for {timeout_text} seconds")
+        time.sleep(int(timeout_text))
+        submit_btn.click()
+    except:
+        try:
+            submit_btn.click()
+        except:
+            Utils.log("Failed to submit button")
+        Utils.log("No sleep needed")
+
+    time.sleep(10)
+    driver.quit()
     print(f"App is uploaded successfully: {apk}")
