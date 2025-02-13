@@ -1,6 +1,5 @@
 import argparse
 import sys
-from tempfile import template
 from utils import Logger
 import utils.scanner as sc
 import utils.apkstore as store
@@ -20,11 +19,13 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-d', '--directory', help="Upload files from this directory")
 parser.add_argument('-p', '--profile', help="Use specific profile directory, default: ./profile")
 parser.add_argument('-t', '--timeout', help="Timeout for chrome to cancel all plans", type=int)
+parser.add_argument('-f', '--template', help="Template to use in platinmods")
 
 args = parser.parse_args()
 source_dir = args.directory
 chrome_profile = args.profile or "./profile"
 timeout = args.timeout or 400
+template = args.template or "./templates/shared_mod.bb"
 
 if not source_dir:
     parser.print_help()
