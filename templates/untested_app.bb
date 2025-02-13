@@ -1,15 +1,15 @@
-[IMG width="280px" height="280px"]{APP_ICON_HERE}[/IMG]
+[IMG]app_icon[/IMG]
 
 Playstore Link:
-{APP_LINK_HERE}
+app_link
 
 [COLOR=#ff0000]*Special Features*[/COLOR]
-{FEATURES_HERE}
+app_features
 
-
+app_note
 [COLOR=#00ff00][U]Free Download:[/U][/COLOR]
 [HIDE]
-Downloadlink: {DOWNLOAD_LINK1_HERE}
+Downloadlink: link_1
 
-Mirror-Link: {DOWNLOAD_LINK2_HERE}
+Mirror-Link: link_2
 [/HIDE]
