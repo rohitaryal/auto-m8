@@ -110,5 +110,5 @@ def post_to_platinmods(
     except:
         Logger.info("No timeout detected")
 
-    driver.implicitly_wait(4)
+    time.sleep(4)
     Logger.info(f"{app_name} uploaded successfully.")
