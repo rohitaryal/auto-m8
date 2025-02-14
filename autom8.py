@@ -60,7 +60,7 @@ for file in file_list:
     Logger.info(f"File: {file}")
 
     link1 = "" #Logger.input("Link 1")
-    link2 = generate_random_url("https://file-upload.org/")#Logger.input("Link 2")
+    link2 = "" #Logger.input("Link 2")
 
 #    features = Logger.input("Features [Separated by ,]") or "Premium Unlocked"
     features = random.choice(["Pro Unlocked", "Premium Unlocked", "Premium Subscribed", "VIP Unlocked", "Subscribed VIP"])
@@ -88,6 +88,9 @@ for file in file_list:
                 'url': '',
                 'icon': '',
             }
+
+    if "varies" in store_detail['version'].lower():
+        store_detail['version'] = file_detail['APP_VERSION']
 
     post_to_platinmods(
         driver,
