@@ -9,7 +9,7 @@ def get(package_name: str):
             country='us'
         )
     except:
-        Logger.error("Failed to find app with package {package_name}")
+        Logger.error(f"Failed to find app with package {package_name}")
 
 def find(keyword: str | None = None):
     if not keyword:
@@ -19,7 +19,7 @@ def find(keyword: str | None = None):
         query=keyword,
         lang='en',
         country='us',
-        n_hits=3
+        n_hits=1
     )
 
 __all__ = ['find', 'get']
