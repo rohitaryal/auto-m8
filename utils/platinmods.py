@@ -115,8 +115,7 @@ def post_to_platinmods(
             print(f"[ @ ] Seconds elasped: {i}", end='\r')
 
         post_button.click()
-    except Exception as e:
-        print(e)
+    except:
         Logger.info("No timeout detected")
 
     time.sleep(4)

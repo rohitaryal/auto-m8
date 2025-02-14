@@ -1,6 +1,8 @@
 import argparse
+import os
 import sys
 import string
+from apkutils import apk
 from colorama import Fore
 from undetected_chromedriver.patcher import random
 from utils import Logger
@@ -104,5 +106,7 @@ for file in file_list:
         app_features =  features,
         template_path = template
    )
+
+    os.remove(file)
 
 driver.quit()
