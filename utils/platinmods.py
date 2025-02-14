@@ -85,6 +85,7 @@ def post_to_platinmods(
     post_button.click()
 
     Logger.info("Detecting timeout dialog")
+    time.sleep(3)
 
     try:
         timeout_box = driver.find_element(uc.By.CSS_SELECTOR, selectors['timeout_box'])
@@ -105,9 +106,17 @@ def post_to_platinmods(
         overlay = driver.find_element(uc.By.CSS_SELECTOR, selectors['outside_overlay'])
         overlay.click()
 
-        time.sleep(timeout_text + 5)
+        time_limit = timeout_text + 10
+        i = 0
+
+        while i < time_limit:
+            time.sleep(1)
+            i += 1
+            print(f"[ @ ] Seconds elasped: {i}", end='\r')
+
         post_button.click()
-    except:
+    except Exception as e:
+        print(e)
         Logger.info("No timeout detected")
 
     time.sleep(4)
