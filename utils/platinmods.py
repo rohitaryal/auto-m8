@@ -1,5 +1,6 @@
 import re
-import time
+
+from apkutils.apkfile import time
 from .logger import Logger
 import undetected_chromedriver as uc
 from selenium.webdriver.support.wait import WebDriverWait
@@ -11,10 +12,11 @@ selectors = {
     "app_type_second": ".menuPrefix.label.label--orange",
     "bb_if_active": ".fr-command.fr-btn.fr-active",
     "bb_enable_button": "#xfBbCode-1",
-    "post_box": "textarea.input:nth-child(3)",
+    "post_box": "textarea",
     "submit_btn": "button.button--icon.button--icon--write.button--primary.rippleButton",
     "timeout_box": ".overlay",
     "outside_overlay": ".overlay-container.is-active",
+    "cancel_button": ".similarthreads-cancel-button",
 }
 
 def post_to_platinmods(
@@ -43,8 +45,21 @@ def post_to_platinmods(
     driver.get("https://platinmods.com/forums/untested-android-apps.155/post-thread")
 
     title_box = driver.find_element(uc.By.CSS_SELECTOR, selectors['title_box'])
+    title_box.clear()
     title_box.send_keys(f"{app_name} v{app_version} ({app_features[0]})")
 
+    first_type = driver.find_element(uc.By.CSS_SELECTOR, selectors['app_type_first'])
+    first_type.click()
+
+    wait.until(EC.presence_of_element_located((uc.By.CSS_SELECTOR, selectors['app_type_second'])))
+    second_type = driver.find_element(uc.By.CSS_SELECTOR, selectors['app_type_second'])
+    second_type.click()
+
+    # A random cancel button to bring bb_enable_button to view
+    #
+    wait.until(EC.presence_of_element_located((uc.By.CSS_SELECTOR, selectors['cancel_button'])))
+    temp_element = driver.find_element(uc.By.CSS_SELECTOR, selectors['cancel_button'])
+    driver.execute_script("arguments[0].scrollIntoView(true)", temp_element)
 
     try:
         driver.find_element(uc.By.CSS_SELECTOR, selectors['bb_if_active'])
@@ -53,15 +68,17 @@ def post_to_platinmods(
         Logger.log("Enabling BB mode")
 
         bb_button = driver.find_element(uc.By.CSS_SELECTOR, selectors['bb_enable_button'])
-        driver.execute_script("arguments[0].scrollIntoView(true)", bb_button)
-        driver.execute_script("arguments[0].click()", bb_button)
-        time.sleep(2)
+        bb_button.click()
 
-    Logger.log(f"Waiting for {selectors['post_box']}")
-    wait.until(EC.presence_of_element_located((uc.By.CSS_SELECTOR, selectors['post_box'])))
+    #Logger.log(f"Waiting for {selectors['post_box']}")
+    #wait.until(EC.presence_of_element_located((uc.By.CSS_SELECTOR, selectors['post_box'])))
+    #
+    time.sleep(2)
 
-    Logger.log("Element found")
-    textarea = driver.find_element(uc.By.CSS_SELECTOR, selectors['post_box'])
+    #Logger.log("Element found")
+    #
+    textarea = driver.find_elements(uc.By.CSS_SELECTOR, selectors['post_box'])[1]
+    textarea.clear()
     driver.execute_script(f"arguments[0].value = `{template}`", textarea)
 
     post_button = driver.find_element(uc.By.CSS_SELECTOR, selectors['submit_btn'])
@@ -79,7 +96,7 @@ def post_to_platinmods(
         else:
             # Just wait for 30 seconds
             #
-            timeout_text = 30
+            timeout_text = 100
 
         Logger.info(f"{timeout_text} seconds timeout detected. Waiting...")
 
@@ -88,7 +105,7 @@ def post_to_platinmods(
         overlay = driver.find_element(uc.By.CSS_SELECTOR, selectors['outside_overlay'])
         overlay.click()
 
-        driver.implicitly_wait(timeout_text + 5)
+        time.sleep(timeout_text + 5)
         post_button.click()
     except:
         Logger.info("No timeout detected")
