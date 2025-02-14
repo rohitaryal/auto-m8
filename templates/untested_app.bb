@@ -1,4 +1,4 @@
-[IMG]app_icon[/IMG]
+[IMG width="280px" height="280px"]app_icon[/IMG]
 
 Playstore Link:
 app_link
@@ -6,7 +6,6 @@ app_link
 [COLOR=#ff0000]*Special Features*[/COLOR]
 app_features
 
-app_note
 [COLOR=#00ff00][U]Free Download:[/U][/COLOR]
 [HIDE]
 Downloadlink: link_1
