@@ -15,17 +15,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from utils.platinmods import post_to_platinmods
 from utils.uploader import upload_to_fileupload, upload_to_modsfire
 
-def generate_random_url(base_url: str, length: int = 12) -> str:
-    """
-    Generates a random URL with a given base URL and a random path of specified length.
-    
-    :param base_url: The base URL (e.g., "https://www.file-upload.org/")
-    :param length: The length of the random path (default is 12 characters)
-    :return: A complete URL with a random path
-    """
-    random_path = ''.join(random.choices(string.ascii_lowercase + string.digits, k=length))
-    return f"{base_url.rstrip('/')}/{random_path}"
-
 parser = argparse.ArgumentParser(
     prog="autom8",
     description="Automate the mod stuffs",
@@ -57,52 +46,50 @@ wait = WebDriverWait(driver=driver, timeout=timeout, poll_frequency=1)
 
 file_list = sc.scan_apps_in_dir(source_dir)
 
-for file in file_list:
-    print(f"\n\n{Fore.GREEN}=============== NEW THREAD ============== {Fore.RESET}")
+for index, file in enumerate(file_list):
+    print(f"\n\n{Fore.GREEN}=============== NEW THREAD [{index + 1}/{len(file_list)}] ============== {Fore.RESET}")
     Logger.info(f"File: {file}")
 
-    link1 = "" #Logger.input("Link 1")
-    link2 = "" #Logger.input("Link 2")
-
-#    features = Logger.input("Features [Separated by ,]") or "Premium Unlocked"
-    features = random.choice(["Pro Unlocked", "Premium Unlocked", "Premium Subscribed", "VIP Unlocked", "Subscribed VIP"])
-    features = features.split(", ")
-
-    
-    if not link1:
-        link1 = upload_to_modsfire(driver, wait, file)
-    if not link2:
-        link2 = upload_to_fileupload(driver, wait, file)
-
     file_detail = apkfile.get_detail_from_file(file)
-
     if file_detail is None:
         continue
 
     store_detail = store.get(file_detail['PACKAGE_NAME'])
-
     if store_detail is None:
-        store_detail = store.get(store.find(file_detail['PACKAGE_NAME'])[0]['appId'])
-        if store_detail is None:
-            store_detail = {
-                'title': '',
-                'version': '',
-                'url': '',
-                'icon': '',
-            }
+        # Let's be some responsible and just skip if the app is not from store
+        #
+        continue
 
     if "varies" in store_detail['version'].lower():
         store_detail['version'] = file_detail['APP_VERSION']
+
+    features = random.choice([
+            "Pro Unlocked", "Premium Unlocked", "Premium Subscribed", "VIP Unlocked", "Subscribed VIP",
+            "Pro Access", "Premium Access", "VIP Access", "Full Premium", 
+            "Exclusive Unlocked", "Pro Membership", "Premium Membership", "VIP Membership",
+            "Ultimate Unlocked", "All Features Unlocked", "Premium Activated", "VIP Activated",
+            "Pro Activated", "Subscribed Pro", "Subscribed Premium", "VIP Subscription",
+            "Full VIP", "All Access Unlocked", "Unlimited Access"
+        ])
+    features = features.split(", ")
+
+
+    link1 = "" #Logger.input("Link 1")
+    link2 = "" #Logger.input("Link 2")    
+    if not link1:
+        link1 = upload_to_modsfire(driver, wait, file)
+    if not link2:
+        link2 = upload_to_fileupload(driver, wait, file)
 
     post_to_platinmods(
         driver,
         wait,
         link_1 = link1 or "",
         link_2 = link2 or "",
-        app_name = store_detail['title'] or Logger.input("App name"),
-        app_version = store_detail['version'] or Logger.input("App version"),
-        app_link = store_detail['url'] or Logger.input("App link"),
-        app_icon = store_detail['icon'] or Logger.input("App icon"),
+        app_name = store_detail['title'],
+        app_version = store_detail['version'],
+        app_link = store_detail['url'],
+        app_icon = store_detail['icon'],
         app_features =  features,
         template_path = template
    )
