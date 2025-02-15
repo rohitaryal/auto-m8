@@ -17,6 +17,7 @@ selectors = {
     "timeout_box": ".overlay",
     "outside_overlay": ".overlay-container.is-active",
     "cancel_button": ".similarthreads-cancel-button",
+    "first_similar_thread": ".similarthreads-container .block-body .contentRow-main a"
 }
 
 def post_to_platinmods(
@@ -44,16 +45,43 @@ def post_to_platinmods(
 
     driver.get("https://platinmods.com/forums/untested-android-apps.155/post-thread")
 
+    Logger.log(f"Waiting for {selectors['title_box']}")
+    wait.until(EC.presence_of_element_located((uc.By.CSS_SELECTOR, selectors['title_box'])))
+
+    # Populate the post title with name and version
+    #
+    Logger.info("Element found")
     title_box = driver.find_element(uc.By.CSS_SELECTOR, selectors['title_box'])
     title_box.clear()
     title_box.send_keys(f"{app_name} v{app_version} ({app_features[0]})")
 
+    # Click on the first post type
+    #
     first_type = driver.find_element(uc.By.CSS_SELECTOR, selectors['app_type_first'])
     first_type.click()
 
+    # Click on the second post type [AOS APP]
+    #
     wait.until(EC.presence_of_element_located((uc.By.CSS_SELECTOR, selectors['app_type_second'])))
     second_type = driver.find_element(uc.By.CSS_SELECTOR, selectors['app_type_second'])
     second_type.click()
+
+    Logger.info("Checking for duplicates...")
+    time.sleep(3)
+    try:
+        first_similar_thread = driver.find_element(uc.By.CSS_SELECTOR, selectors['first_similar_thread'])
+        similar_thread_heading = first_similar_thread.text
+        splitted_name = app_name.split(" ")
+        # Check if the version already exists,
+        # If so just cancel the plan to post
+        if app_version in similar_thread_heading and splitted_name[0] in similar_thread_heading:
+            Logger.error("Similar thread found. Skipping...")
+            return
+#        else:
+#            if Logger.input(f"Found {similar_thread_heading}. Continue [y/n]").lower() == "n":
+#                return
+    except:
+        Logger.info("No similar threads found")
 
     # A random cancel button to bring bb_enable_button to view
     #
