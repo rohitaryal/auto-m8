@@ -60,8 +60,7 @@ for index, file in enumerate(file_list):
         #
         continue
 
-    if "varies" in store_detail['version'].lower():
-        store_detail['version'] = file_detail['APP_VERSION']
+    store_detail['version'] = file_detail['APP_VERSION']
 
     features = random.choice([
             "Pro Unlocked", "Premium Unlocked", "Premium Subscribed", "VIP Unlocked", "Subscribed VIP",
