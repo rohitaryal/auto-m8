@@ -61,12 +61,12 @@ for index, file in enumerate(file_list):
     store_detail['version'] = file_detail['APP_VERSION']
 
     features = random.choice([
-            "Pro Unlocked", "Premium Unlocked", "Premium Subscribed", "VIP Unlocked", "Subscribed VIP",
-            "Pro Access", "Premium Access", "VIP Access", "Full Premium", 
-            "Exclusive Unlocked", "Pro Membership", "Premium Membership", "VIP Membership",
-            "Ultimate Unlocked", "All Features Unlocked", "Premium Activated", "VIP Activated",
-            "Pro Activated", "Subscribed Pro", "Subscribed Premium", "VIP Subscription",
-            "Full VIP", "All Access Unlocked", "Unlimited Access"
+            "Pro Unlocked", "Premium Unlocked", "Premium Subscribed", "Premium Unlocked", "Subscribed Premium",
+            "Pro Access", "Premium Access", "Premium Access", "Full Premium", 
+            "Exclusive Unlocked", "Pro Membership", "Premium Membership", "Premium Membership",
+            "Ultimate Unlocked", "All Features Unlocked", "Premium Activated", "Premium Activated",
+            "Pro Activated", "Subscribed Pro", "Subscribed Premium", "Premium Subscription",
+            "Full Premium", "All Access Unlocked", "Unlimited Access"
         ])
     features = features.split(", ")
 
